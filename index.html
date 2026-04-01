@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FD Geomatics - 專案需求單</title>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f5f7; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-top: 0; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
+        select, input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; margin-top: 25px; background-color: #06C755; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        button:hover { background-color: #05b34c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>專案需求評估單</h2>
+        
+        <label>服務類別</label>
+        <select id="service">
+            <option value="無人機航測">無人機航測</option>
+            <option value="3DGS 建模">3DGS 建模</option>
+            <option value="GIS 圖層分析">GIS 圖層分析</option>
+        </select>
+
+        <label>預估專案面積 (公頃)</label>
+        <input type="number" id="area" placeholder="請輸入數字">
+
+        <button onclick="submitForm()">送出需求</button>
+    </div>
+
+    <script>
+        // 1. 初始化 LIFF (請將 YOUR_LIFF_ID 換成您剛才取得的真實 ID)
+        liff.init({ liffId: "YOUR_LIFF_ID" }).then(() => {
+            console.log("LIFF 初始化成功");
+        }).catch((err) => {
+            console.error("LIFF 初始化失敗", err);
+        });
+
+        // 2. 點擊送出按鈕時執行的動作
+        function submitForm() {
+            // 抓取表單資料與客戶的 LINE User ID
+            const data = {
+                userId: liff.getContext().userId,
+                service: document.getElementById('service').value,
+                area: parseFloat(document.getElementById('area').value)
+            };
+
+            // 3. 將資料打向您在 n8n 建立的 Webhook 網址
+            fetch('https://weizch0121-n8n-robertline.hf.space/webhook/liff-inquiry', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(() => {
+                alert('需求已送出！專員將盡快與您聯繫。');
+                liff.closeWindow(); // 成功後自動關閉 LIFF 視窗
+            }).catch((err) => {
+                alert('傳送失敗，請稍後再試。');
+            });
+        }
+    </script>
+</body>
+</html>
