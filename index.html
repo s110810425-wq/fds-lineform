@@ -3,51 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專案需求評估 - Frozen Dimensions Geomatics</title>
+    <title>Frozen Dimensions Geomatics Center</title>
     <style>
         :root { --primary-color: #00c853; --dark-green: #2e7d32; --bg-color: #f0f2f5; }
         body { font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; }
         
-        /* 頂部標題列與 Logo 視覺整合 */
-        .header { background: white; padding: 15px 30px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
-        .logo { height: 48px; margin-right: 20px; transition: 0.3s; }
-        .logo:hover { transform: scale(1.05); }
-        .header-title { font-size: 22px; font-weight: bold; color: #333; border-left: 5px solid var(--primary-color); padding-left: 18px; letter-spacing: 1px; }
+        /* 頂部 Header 僅保留 Logo */
+        .header { background: white; padding: 12px 30px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .logo { height: 40px; }
 
         /* 表單容器 */
-        .container { max-width: 680px; margin: 40px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 5px 25px rgba(0,0,0,0.07); }
-        .form-group { margin-bottom: 25px; }
+        .container { max-width: 680px; margin: 30px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 5px 25px rgba(0,0,0,0.07); }
+        
+        /* 標題移回表單上方 */
+        .title-area { margin-bottom: 25px; border-left: 5px solid var(--primary-color); padding-left: 18px; }
+        .main-title { font-size: 24px; font-weight: bold; color: #333; margin: 0; }
+        .sub-title { font-size: 14px; color: #777; margin-top: 5px; letter-spacing: 1px; }
+
+        .form-group { margin-bottom: 22px; }
         label { display: block; font-weight: bold; margin-bottom: 10px; color: #444; font-size: 16px; }
-        select, input[type="text"], input[type="number"] { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: all 0.3s ease; background-color: white; }
+        select, input[type="text"], input[type="number"] { width: 100%; padding: 13px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: all 0.3s; background-color: white; }
         select:focus, input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 4px rgba(0, 200, 83, 0.1); }
         
-        /* 地圖區域增強與工具列 */
-        #map-container { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #ddd; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        #map { height: 380px; width: 100%; }
+        /* 地圖區域 */
+        #map-container { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #ddd; margin-top: 10px; }
+        #map { height: 380px; width: 100%; background-color: #e5e3df; } /* 增加預設底色 */
         .map-tools { position: absolute; top: 12px; right: 12px; z-index: 5; }
-        .btn-toggle { background: rgba(255, 255, 255, 0.95); border: 1px solid #ccc; padding: 9px 15px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; color: #555; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: 0.2s; backdrop-filter: blur(2px); }
-        .btn-toggle:hover { background: white; border-color: #aaa; }
-        .btn-toggle.active { background: var(--primary-color); color: white; border-color: var(--primary-color); box-shadow: 0 2px 8px rgba(0, 200, 83, 0.3); }
+        .btn-toggle { background: white; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .btn-toggle.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
         
-        /* 座標顯示與提示 */
-        .location-display { background: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px solid #eee; font-family: "Courier New", monospace; color: #555; font-size: 15px; margin-top: 5px; }
-        .tip-box { font-size: 14px; color: var(--dark-green); background: #e8f5e9; padding: 12px 16px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--primary-color); display: flex; align-items: start; }
-        .tip-icon { margin-right: 10px; font-size: 16px; }
+        .location-display { background: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px solid #eee; font-family: monospace; color: #555; margin-top: 8px; }
+        .tip-box { font-size: 13px; color: var(--dark-green); background: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 15px; display: flex; align-items: start; }
 
-        /* 送出按鈕 */
-        .btn-submit { background-color: var(--primary-color); color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-size: 19px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 15px; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2); }
-        .btn-submit:hover { background-color: #00a844; transform: translateY(-1px); box-shadow: 0 6px 15px rgba(0, 200, 83, 0.25); }
-        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn-submit { background-color: var(--primary-color); color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-size: 19px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 20px; box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2); }
+        .btn-submit:hover { background-color: #00a844; transform: translateY(-1px); }
+        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <img src="./logo.png" alt="Frozen Dimensions Geomatics Logo" class="logo" onerror="this.src='https://via.placeholder.com/150x50?text=FDG+Logo'"> 
-    <div class="header-title">專案需求評估單</div>
+    <img src="./logo.png" alt="FDG Logo" class="logo" onerror="this.style.display='none'"> 
 </div>
 
 <div class="container">
+    <div class="title-area">
+        <h1 class="main-title">Frozen Dimensions Geomatics Center</h1>
+        <div class="sub-title">專案需求評估單</div>
+    </div>
+
     <form id="requestForm">
         <div class="form-group">
             <label for="serviceType">服務類別</label>
@@ -61,12 +65,12 @@
 
         <div class="form-group">
             <label for="area">預估專案面積 (公頃)</label>
-            <input type="number" id="area" step="0.01" placeholder="請輸入數字 (例如: 1.5)" required>
+            <input type="number" id="area" step="0.01" placeholder="請輸入數字" required>
         </div>
 
         <div class="form-group">
             <label for="targetObject">標的物說明</label>
-            <input type="text" id="targetObject" placeholder="例如：農地、廠房、歷史建物基地" required>
+            <input type="text" id="targetObject" placeholder="例如：農地、廠房、歷史建物" required>
         </div>
 
         <div class="form-group">
@@ -77,10 +81,9 @@
                 </div>
                 <div id="map"></div>
             </div>
-            <input type="text" id="locationData" class="location-display" readonly placeholder="請點擊地圖以獲取座標" required>
+            <input type="text" id="locationData" class="location-display" readonly placeholder="點擊地圖以獲取座標" required>
             <div class="tip-box">
-                <span class="tip-icon">💡</span>
-                <div>提示：開啟編輯模式後，在地圖上點擊或拖曳標記，以精確對準標的物。鎖定模式可防止誤觸。</div>
+                💡 提示：開啟編輯模式後，在地圖上點擊或拖曳標記以對準標的物。
             </div>
         </div>
 
@@ -91,114 +94,78 @@
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIVHHU6_IYwLwDFonK9c6EPKeZoagW6Cg&callback=initMap"></script>
 
 <script>
-    let map;
-    let marker;
-    let isEditMode = true; // 預設開啟編輯模式
-
-    // 使用您提供的 GAS Web App URL
+    let map, marker, isEditMode = true;
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzZDeNdatsrmwezdAGAE1WL8K5J02aEQ0COX2FoiUggU6QucZYrU6ww10V-DcRF1zoK/exec";
 
-    // 1. 初始化地圖功能
     function initMap() {
-        // 設定金門地區作為預設中心點 (適合您的業務範疇)
-        const kinmenCenter = { lat: 24.449, lng: 118.322 };
-        
-        map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: kinmenCenter,
-            mapTypeId: 'hybrid', // 使用衛星混合圖，方便看清地形與建築物
-            disableDefaultUI: false,
-            zoomControl: true,
-            gestureHandling: 'cooperative' // 在手機上滑動網頁時，地圖需要雙指才能縮放，避免誤觸
-        });
+        const kinmen = { lat: 24.449, lng: 118.322 };
+        try {
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: kinmen,
+                mapTypeId: 'hybrid',
+                gestureHandling: 'cooperative'
+            });
 
-        // 建立初始標記點
-        marker = new google.maps.Marker({
-            position: kinmenCenter,
-            map: map,
-            draggable: true, // 預設可拖曳
-            title: "專案標的物位置",
-            animation: google.maps.Animation.DROP // 掉落動畫增強視覺效果
-        });
+            marker = new google.maps.Marker({
+                position: kinmen,
+                map: map,
+                draggable: true,
+                animation: google.maps.Animation.DROP
+            });
 
-        // [功能優化] 監聽地圖點擊事件：更新標記位置與座標欄位
-        map.addListener("click", (e) => {
-            if (!isEditMode) return; // 鎖定模式下不反應
-            marker.setPosition(e.latLng);
-            updateCoordsField(e.latLng);
-        });
+            map.addListener("click", (e) => {
+                if (!isEditMode) return;
+                marker.setPosition(e.latLng);
+                updateCoords(e.latLng);
+            });
 
-        // [功能優化] 監聽標記拖曳結束事件：更新座標欄位
-        marker.addListener("dragend", () => {
-            if (!isEditMode) return; // 鎖定模式下不反應 (雖然鎖定時通常已設為不可拖曳，但這是雙重防護)
-            updateCoordsField(marker.getPosition());
-        });
+            marker.addListener("dragend", () => {
+                if (!isEditMode) return;
+                updateCoords(marker.getPosition());
+            });
+        } catch (e) {
+            console.error("地圖初始化失敗，請檢查 API 金鑰權限。", e);
+        }
     }
 
-    // 更新座標欄位值的輔助函式
-    function updateCoordsField(latLng) {
-        // 將座標格式化為 6 位小數，這在測量上已經具備極高的精度
-        const formattedCoords = latLng.lat().toFixed(6) + ", " + latLng.lng().toFixed(6);
-        document.getElementById("locationData").value = formattedCoords;
+    function updateCoords(latLng) {
+        document.getElementById("locationData").value = latLng.lat().toFixed(6) + ", " + latLng.lng().toFixed(6);
     }
 
-    // [新增功能] 切換編輯模式與鎖定模式的邏輯
     document.getElementById("editToggle").addEventListener("click", function() {
         isEditMode = !isEditMode;
         this.classList.toggle("active");
-        
-        if (isEditMode) {
-            this.textContent = "編輯模式：開啟";
-            marker.setDraggable(true);
-            marker.setAnimation(google.maps.Animation.BOUNCE); // 彈跳提示可操作
-            setTimeout(() => marker.setAnimation(null), 1500); // 彈跳後停止
-        } else {
-            this.textContent = "編輯模式：已鎖定";
-            marker.setDraggable(false);
-            marker.setAnimation(null); // 停止彈跳
-        }
+        this.textContent = isEditMode ? "編輯模式：開啟" : "編輯模式：已鎖定";
+        marker.setDraggable(isEditMode);
     });
 
-    // 2. 處理表單送出邏輯 (將資料寫入 Google 試算表)
     document.getElementById("requestForm").addEventListener("submit", function(e) {
-        e.preventDefault(); // 阻止網頁跳轉的預設行為
-        
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.disabled = true; // 禁用按鈕防止重複送出
-        submitBtn.textContent = "資料傳送中...";
+        e.preventDefault();
+        const btn = document.getElementById("submitBtn");
+        btn.disabled = true;
+        btn.textContent = "傳送中...";
 
-        // 資料打包 (JSON 格式)，請確保 GAS 的 doPOST(e) 函式中有解析對應的欄位名稱
         const payload = {
-            user: "Weizch先生 (LIFF測試)", // 當前為靜態名稱，建議之後串接 LIFF getProfile 取得真實暱稱
+            user: "Weizch先生", 
             serviceType: document.getElementById("serviceType").value,
             area: document.getElementById("area").value,
             targetObject: document.getElementById("targetObject").value,
             location: document.getElementById("locationData").value
         };
 
-        // 使用 fetch 透過 POST 方法將資料送往 GAS
-        fetch(GAS_URL, {
-            method: "POST",
-            mode: "no-cors", // 配合 GAS 的跨域安全性要求
-            body: JSON.stringify(payload)
-        })
+        fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
         .then(() => {
-            // 資料傳送成功 (GAS 接收到 POST 請求即視為成功，無需等待回應)
-            alert("您的需求評估單已送出成功！我們將盡快與您聯繫。");
-            document.getElementById("requestForm").reset(); // 重設表單
-            submitBtn.disabled = false;
-            submitBtn.textContent = "送出需求評估";
-            
-            // 可選擇在此呼叫 liff.closeWindow() 關閉視窗 (若在 LINE 內開啟)
+            alert("需求單已送出成功！");
+            btn.disabled = false;
+            btn.textContent = "送出需求評估";
         })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("傳送資料發生錯誤，請檢查網路連線狀態。");
-            submitBtn.disabled = false;
-            submitBtn.textContent = "送出需求評估";
+        .catch(() => {
+            alert("傳送出錯，請檢查網路。");
+            btn.disabled = false;
+            btn.textContent = "送出需求評估";
         });
     });
 </script>
-
 </body>
 </html>
