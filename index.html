@@ -28,7 +28,16 @@
 
         <label>預估專案面積 (公頃)</label>
         <input type="number" id="area" placeholder="請輸入數字">
+    <div class="form-group" style="margin-top: 20px;">
+        <label for="targetObject" style="display: block; font-weight: bold; margin-bottom: 5px;">標的物說明</label>
+        <input type="text" id="targetObject" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" placeholder="例如：農地、廠房、歷史建物" required>
+    </div>
 
+    <div class="form-group" style="margin-top: 20px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">專案位置定位 (請點擊地圖標記)</label>
+        <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px;"></div>
+        <input type="text" id="locationData" style="width: 100%; padding: 10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 4px;" readonly placeholder="點擊上方地圖後自動帶入座標" required>
+    </div>
         <button onclick="submitForm()">送出需求</button>
     </div>
 
