@@ -3,73 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FD Geomatics - 專案需求單</title>
-    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <title>專案需求評估單 - Frozen Dimensions</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background-color: #f4f5f7; }
-        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h2 { color: #333; margin-top: 0; }
-        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
-        select, input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; margin-top: 25px; background-color: #06C755; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
-        button:hover { background-color: #05b34c; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { border-left: 5px solid #00c853; padding-left: 15px; margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        #map { height: 350px; width: 100%; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; }
+        .btn-submit { background-color: #00c853; color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-size: 18px; cursor: pointer; transition: 0.3s; }
+        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
+        .location-info { background: #e8f5e9; padding: 10px; border-radius: 4px; color: #2e7d32; font-size: 14px; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>專案需求評估單</h2>
-        
-        <label>服務類別</label>
-        <select id="service">
-            <option value="無人機航測">無人機航測</option>
-            <option value="3DGS 建模">3DGS 建模</option>
-            <option value="GIS 圖層分析">GIS 圖層分析</option>
-        </select>
 
-        <label>預估專案面積 (公頃)</label>
-        <input type="number" id="area" placeholder="請輸入數字">
-    <div class="form-group" style="margin-top: 20px;">
-        <label for="targetObject" style="display: block; font-weight: bold; margin-bottom: 5px;">標的物說明</label>
-        <input type="text" id="targetObject" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" placeholder="例如：農地、廠房、歷史建物" required>
-    </div>
+<div class="container">
+    <h2>專案需求評估單</h2>
+    <form id="requestForm">
+        <div class="form-group">
+            <label>服務類別</label>
+            <select id="serviceType">
+                <option value="無人機航測">無人機航測</option>
+                <option value="點雲資料處理">點雲資料處理</option>
+                <option value="3DGS建模">3DGS建模</option>
+                <option value="地形測量">地形測量</option>
+            </select>
+        </div>
 
-    <div class="form-group" style="margin-top: 20px;">
-        <label style="display: block; font-weight: bold; margin-bottom: 5px;">專案位置定位 (請點擊地圖標記)</label>
-        <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px;"></div>
-        <input type="text" id="locationData" style="width: 100%; padding: 10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 4px;" readonly placeholder="點擊上方地圖後自動帶入座標" required>
-    </div>
-        <button onclick="submitForm()">送出需求</button>
-    </div>
+        <div class="form-group">
+            <label>預估專案面積 (公頃)</label>
+            <input type="number" id="area" step="0.01" placeholder="請輸入數字" required>
+        </div>
 
-    <script>
-        // 1. 初始化 LIFF (請將 YOUR_LIFF_ID 換成您剛才取得的真實 ID)
-        liff.init({ liffId: "2009670938-wdxrng0c" }).then(() => {
-            console.log("LIFF 初始化成功");
-        }).catch((err) => {
-            console.error("LIFF 初始化失敗", err);
+        <div class="form-group">
+            <label>標的物說明</label>
+            <input type="text" id="targetObject" placeholder="例如：農地、廠房、歷史建物" required>
+        </div>
+
+        <div class="form-group">
+            <label>專案位置定位 (請在地圖上點擊標記位置)</label>
+            <div id="map"></div>
+            <input type="text" id="locationData" readonly placeholder="點擊上方地圖後自動帶入座標" required>
+            <div class="location-info">提示：地圖標記可拖曳精確對準目標物。</div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit">送出需求</button>
+    </form>
+</div>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIVHHU6_IYwLwDFonK9c6EPKeZoagW6Cg&callback=initMap"></script>
+
+<script>
+    let map;
+    let marker;
+    const GAS_URL = https://script.google.com/macros/s/AKfycbzZDeNdatsrmwezdAGAE1WL8K5J02aEQ0COX2FoiUggU6QucZYrU6ww10V-DcRF1zoK/exec; // 請貼上您部署的 GAS 網址
+
+    // 1. 初始化地圖
+    function initMap() {
+        const kinmen = { lat: 24.449, lng: 118.322 };
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: kinmen,
+            mapTypeId: 'hybrid' // 預設使用衛星混合圖，方便看清建築物
         });
 
-        // 2. 點擊送出按鈕時執行的動作
-        function submitForm() {
-            // 抓取表單資料與客戶的 LINE User ID
-            const data = {
-                userId: liff.getContext().userId,
-                service: document.getElementById('service').value,
-                area: parseFloat(document.getElementById('area').value)
-            };
+        marker = new google.maps.Marker({
+            position: kinmen,
+            map: map,
+            draggable: true
+        });
 
-            // 3. 將資料打向您在 n8n 建立的 Webhook 網址
-            fetch('https://weizch0121-n8n-robertline.hf.space/webhook/liff-inquiry', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            }).then(() => {
-                alert('需求已送出！專員將盡快與您聯繫。');
-                liff.closeWindow(); // 成功後自動關閉 LIFF 視窗
-            }).catch((err) => {
-                alert('傳送失敗，請稍後再試。');
-            });
-        }
-    </script>
+        // 點擊地圖更新座標
+        map.addListener("click", (e) => {
+            marker.setPosition(e.latLng);
+            updateLocationValue(e.latLng);
+        });
+
+        // 拖曳結束更新座標
+        marker.addListener("dragend", () => {
+            updateLocationValue(marker.getPosition());
+        });
+    }
+
+    function updateLocationValue(latLng) {
+        document.getElementById("locationData").value = latLng.lat().toFixed(6) + ", " + latLng.lng().toFixed(6);
+    }
+
+    // 2. 表單送出邏輯
+    document.getElementById("requestForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "傳送中...";
+
+        const payload = {
+            user: "Weizch先生 (測試)", // 建議之後串接 LIFF 取得暱稱
+            serviceType: document.getElementById("serviceType").value,
+            area: document.getElementById("area").value,
+            targetObject: document.getElementById("targetObject").value,
+            location: document.getElementById("locationData").value
+        };
+
+        // 使用 fetch 送出資料到 GAS
+        fetch(GAS_URL, {
+            method: "POST",
+            mode: "no-cors", // 配合 GAS 的跨域限制
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            alert("需求評估單已送出成功！");
+            document.getElementById("requestForm").reset();
+            submitBtn.disabled = false;
+            submitBtn.textContent = "送出需求";
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("傳送發生錯誤，請稍後再試。");
+            submitBtn.disabled = false;
+        });
+    });
+</script>
+
 </body>
 </html>
