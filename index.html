@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frozen Dimensions Geomatics Center</title>
+    <title>Frozen Dimension Geomatics Center</title>
     <style>
         :root { --primary-color: #00c853; --dark-green: #2e7d32; --bg-color: #f0f2f5; }
         body { font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; }
         
-        /* 頂部 Header 僅保留 Logo */
-        .header { background: white; padding: 12px 30px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .logo { height: 40px; }
+        /* 頂部 Header：Logo 放大 1.5 倍與公司名稱 */
+        .header { background: white; padding: 15px 35px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .logo { height: 60px; margin-right: 20px; transition: 0.3s; } /* 高度從 40px 放大到 60px */
+        .company-name { font-size: 22px; font-weight: bold; color: #333; letter-spacing: 0.5px; }
 
         /* 表單容器 */
         .container { max-width: 680px; margin: 30px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 5px 25px rgba(0,0,0,0.07); }
         
-        /* 標題移回表單上方 */
-        .title-area { margin-bottom: 25px; border-left: 5px solid var(--primary-color); padding-left: 18px; }
-        .main-title { font-size: 24px; font-weight: bold; color: #333; margin: 0; }
-        .sub-title { font-size: 14px; color: #777; margin-top: 5px; letter-spacing: 1px; }
+        /* 表單內部標題：專案需求評估單 */
+        .form-title-area { margin-bottom: 30px; border-left: 5px solid var(--primary-color); padding-left: 18px; }
+        .form-title { font-size: 24px; font-weight: bold; color: #333; margin: 0; }
+        .form-subtitle { font-size: 14px; color: #888; margin-top: 5px; }
 
         .form-group { margin-bottom: 22px; }
         label { display: block; font-weight: bold; margin-bottom: 10px; color: #444; font-size: 16px; }
@@ -27,7 +28,7 @@
         
         /* 地圖區域 */
         #map-container { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #ddd; margin-top: 10px; }
-        #map { height: 380px; width: 100%; background-color: #e5e3df; } /* 增加預設底色 */
+        #map { height: 380px; width: 100%; background-color: #e5e3df; }
         .map-tools { position: absolute; top: 12px; right: 12px; z-index: 5; }
         .btn-toggle { background: white; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
         .btn-toggle.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
@@ -44,12 +45,13 @@
 
 <div class="header">
     <img src="./logo.png" alt="FDG Logo" class="logo" onerror="this.style.display='none'"> 
+    <div class="company-name">Frozen Dimension Geomatics Center</div>
 </div>
 
 <div class="container">
-    <div class="title-area">
-        <h1 class="main-title">Frozen Dimensions Geomatics Center</h1>
-        <div class="sub-title">專案需求評估單</div>
+    <div class="form-title-area">
+        <h1 class="form-title">專案需求評估單</h1>
+        <div class="form-subtitle">請填寫以下資訊，我們將盡快為您估價</div>
     </div>
 
     <form id="requestForm">
@@ -65,7 +67,7 @@
 
         <div class="form-group">
             <label for="area">預估專案面積 (公頃)</label>
-            <input type="number" id="area" step="0.01" placeholder="請輸入數字" required>
+            <input type="number" id="area" step="0.01" placeholder="請輸入數字 (例如: 1.5)" required>
         </div>
 
         <div class="form-group">
@@ -99,34 +101,30 @@
 
     function initMap() {
         const kinmen = { lat: 24.449, lng: 118.322 };
-        try {
-            map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 15,
-                center: kinmen,
-                mapTypeId: 'hybrid',
-                gestureHandling: 'cooperative'
-            });
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: kinmen,
+            mapTypeId: 'hybrid',
+            gestureHandling: 'cooperative'
+        });
 
-            marker = new google.maps.Marker({
-                position: kinmen,
-                map: map,
-                draggable: true,
-                animation: google.maps.Animation.DROP
-            });
+        marker = new google.maps.Marker({
+            position: kinmen,
+            map: map,
+            draggable: true,
+            animation: google.maps.Animation.DROP
+        });
 
-            map.addListener("click", (e) => {
-                if (!isEditMode) return;
-                marker.setPosition(e.latLng);
-                updateCoords(e.latLng);
-            });
+        map.addListener("click", (e) => {
+            if (!isEditMode) return;
+            marker.setPosition(e.latLng);
+            updateCoords(e.latLng);
+        });
 
-            marker.addListener("dragend", () => {
-                if (!isEditMode) return;
-                updateCoords(marker.getPosition());
-            });
-        } catch (e) {
-            console.error("地圖初始化失敗，請檢查 API 金鑰權限。", e);
-        }
+        marker.addListener("dragend", () => {
+            if (!isEditMode) return;
+            updateCoords(marker.getPosition());
+        });
     }
 
     function updateCoords(latLng) {
@@ -156,9 +154,10 @@
 
         fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
         .then(() => {
-            alert("需求單已送出成功！");
+            alert("您的需求單已送出成功！");
             btn.disabled = false;
             btn.textContent = "送出需求評估";
+            document.getElementById("requestForm").reset();
         })
         .catch(() => {
             alert("傳送出錯，請檢查網路。");
