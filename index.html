@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frozen Dimension Geomatics Center</title>
+    <title>Frozen Dimensions Geomatics Center</title>
     <style>
         :root { --primary-color: #00c853; --dark-green: #2e7d32; --bg-color: #f0f2f5; }
         body { font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; }
         
-        /* 頂部 Header：Logo 放大 1.5 倍與公司名稱 */
-        .header { background: white; padding: 15px 35px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .logo { height: 60px; margin-right: 20px; transition: 0.3s; } /* 高度從 40px 放大到 60px */
-        .company-name { font-size: 22px; font-weight: bold; color: #333; letter-spacing: 0.5px; }
+        /* 頂部 Header：Logo 與公司名稱並排 */
+        .header { background: white; padding: 15px 35px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .logo { height: 60px; margin-right: 20px; transition: 0.3s; }
+        .company-name { font-size: 24px; font-weight: bold; color: #333; letter-spacing: 0.5px; }
 
         /* 表單容器 */
-        .container { max-width: 680px; margin: 30px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 5px 25px rgba(0,0,0,0.07); }
+        .container { max-width: 680px; margin: 40px auto; background: white; padding: 45px; border-radius: 16px; box-shadow: 0 5px 25px rgba(0,0,0,0.07); }
         
-        /* 表單內部標題：專案需求評估單 */
-        .form-title-area { margin-bottom: 30px; border-left: 5px solid var(--primary-color); padding-left: 18px; }
-        .form-title { font-size: 24px; font-weight: bold; color: #333; margin: 0; }
-        .form-subtitle { font-size: 14px; color: #888; margin-top: 5px; }
+        /* 表單內部標題：放大字體增加層次感 */
+        .form-title-area { margin-bottom: 35px; border-left: 6px solid var(--primary-color); padding-left: 22px; }
+        .form-title { font-size: 28px; font-weight: 800; color: #222; margin: 0; letter-spacing: 2px; }
+        .form-subtitle { font-size: 15px; color: #777; margin-top: 8px; font-weight: 400; }
 
-        .form-group { margin-bottom: 22px; }
-        label { display: block; font-weight: bold; margin-bottom: 10px; color: #444; font-size: 16px; }
-        select, input[type="text"], input[type="number"] { width: 100%; padding: 13px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: all 0.3s; background-color: white; }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; font-weight: bold; margin-bottom: 12px; color: #444; font-size: 16px; }
+        select, input[type="text"], input[type="number"] { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: all 0.3s; background-color: white; }
         select:focus, input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 4px rgba(0, 200, 83, 0.1); }
         
         /* 地圖區域 */
@@ -34,9 +34,9 @@
         .btn-toggle.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
         
         .location-display { background: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px solid #eee; font-family: monospace; color: #555; margin-top: 8px; }
-        .tip-box { font-size: 13px; color: var(--dark-green); background: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 15px; display: flex; align-items: start; }
+        .tip-box { font-size: 14px; color: var(--dark-green); background: #e8f5e9; padding: 14px; border-radius: 8px; margin-top: 15px; display: flex; align-items: start; line-height: 1.5; }
 
-        .btn-submit { background-color: var(--primary-color); color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-size: 19px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 20px; box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2); }
+        .btn-submit { background-color: var(--primary-color); color: white; border: none; padding: 20px; width: 100%; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 25px; box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2); letter-spacing: 1px; }
         .btn-submit:hover { background-color: #00a844; transform: translateY(-1px); }
         .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
     </style>
@@ -45,13 +45,13 @@
 
 <div class="header">
     <img src="./logo.png" alt="FDG Logo" class="logo" onerror="this.style.display='none'"> 
-    <div class="company-name">Frozen Dimension Geomatics Center</div>
+    <div class="company-name">Frozen Dimensions Geomatics Center</div>
 </div>
 
 <div class="container">
     <div class="form-title-area">
         <h1 class="form-title">專案需求評估單</h1>
-        <div class="form-subtitle">請填寫以下資訊，我們將盡快為您估價</div>
+        <div class="form-subtitle">Frozen Dimensions Geomatics 竭誠為您服務</div>
     </div>
 
     <form id="requestForm">
@@ -85,7 +85,7 @@
             </div>
             <input type="text" id="locationData" class="location-display" readonly placeholder="點擊地圖以獲取座標" required>
             <div class="tip-box">
-                💡 提示：開啟編輯模式後，在地圖上點擊或拖曳標記以對準標的物。
+                💡 提示：開啟編輯模式後，在地圖上點擊或拖曳標記以對準標的物。鎖定模式可防止誤觸。
             </div>
         </div>
 
