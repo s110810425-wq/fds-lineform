@@ -3,24 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專案需求評估單 - Frozen Dimensions</title>
+    <title>專案需求評估 - Frozen Dimensions</title>
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f4f7f6; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2 { border-left: 5px solid #00c853; padding-left: 15px; margin-bottom: 25px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        #map { height: 350px; width: 100%; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; }
-        .btn-submit { background-color: #00c853; color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-size: 18px; cursor: pointer; transition: 0.3s; }
-        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
-        .location-info { background: #e8f5e9; padding: 10px; border-radius: 4px; color: #2e7d32; font-size: 14px; margin-top: 5px; }
+        :root { --primary-color: #00c853; --dark-green: #2e7d32; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
+        
+        /* 頂部標題列與 Logo 整合 */
+        .header { background: white; padding: 15px 25px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { height: 45px; margin-right: 15px; }
+        .header-title { font-size: 20px; font-weight: bold; border-left: 4px solid var(--primary-color); padding-left: 15px; color: #333; }
+
+        .container { max-width: 650px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .form-group { margin-bottom: 22px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; transition: 0.3s; }
+        select:focus, input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.1); }
+        
+        /* 地圖區域增強 */
+        #map-container { position: relative; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; margin-bottom: 10px; }
+        #map { height: 350px; width: 100%; }
+        .map-tools { position: absolute; top: 10px; right: 10px; z-index: 5; }
+        .btn-toggle { background: white; border: 1px solid #ddd; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-toggle.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        
+        .location-display { background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #eee; font-family: monospace; color: #666; font-size: 14px; }
+        .tip { font-size: 13px; color: var(--dark-green); background: #e8f5e9; padding: 10px; border-radius: 6px; margin-top: 10px; }
+        .btn-submit { background-color: var(--primary-color); color: white; border: none; padding: 16px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-submit:hover { background-color: #00a844; }
     </style>
 </head>
 <body>
 
+<div class="header">
+    <img src="./logo.png" alt="Logo" class="logo" onerror="this.style.display='none'"> 
+    <div class="header-title">專案需求評估單</div>
+</div>
+
 <div class="container">
-    <h2>專案需求評估單</h2>
     <form id="requestForm">
         <div class="form-group">
             <label>服務類別</label>
@@ -43,89 +62,85 @@
         </div>
 
         <div class="form-group">
-            <label>專案位置定位 (請在地圖上點擊標記位置)</label>
-            <div id="map"></div>
-            <input type="text" id="locationData" readonly placeholder="點擊上方地圖後自動帶入座標" required>
-            <div class="location-info">提示：地圖標記可拖曳精確對準目標物。</div>
+            <label>專案位置定位</label>
+            <div id="map-container">
+                <div class="map-tools">
+                    <button type="button" id="editToggle" class="btn-toggle active">編輯模式：開啟</button>
+                </div>
+                <div id="map"></div>
+            </div>
+            <input type="text" id="locationData" class="location-display" readonly placeholder="點擊地圖以獲取座標" required>
+            <div class="tip">💡 提示：開啟編輯模式後，在地圖上點擊或拖曳標記以對準標的物。</div>
         </div>
 
         <button type="submit" id="submitBtn" class="btn-submit">送出需求</button>
     </form>
 </div>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIVHHU6_IYwLwDFonK9c6EPKeZoagW6Cg&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 
 <script>
-    let map;
-    let marker;
-    const GAS_URL = https://script.google.com/macros/s/AKfycbzZDeNdatsrmwezdAGAE1WL8K5J02aEQ0COX2FoiUggU6QucZYrU6ww10V-DcRF1zoK/exec; // 請貼上您部署的 GAS 網址
+    let map, marker, isEditMode = true;
+    const GAS_URL = "YOUR_GAS_WEB_APP_URL";
 
-    // 1. 初始化地圖
     function initMap() {
         const kinmen = { lat: 24.449, lng: 118.322 };
         map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: kinmen,
-            mapTypeId: 'hybrid' // 預設使用衛星混合圖，方便看清建築物
+            zoom: 15, center: kinmen, mapTypeId: 'hybrid',
+            disableDefaultUI: false, zoomControl: true
         });
 
         marker = new google.maps.Marker({
-            position: kinmen,
-            map: map,
-            draggable: true
+            position: kinmen, map: map, draggable: true, title: "專案位置"
         });
 
-        // 點擊地圖更新座標
         map.addListener("click", (e) => {
+            if (!isEditMode) return;
             marker.setPosition(e.latLng);
-            updateLocationValue(e.latLng);
+            updateCoords(e.latLng);
         });
 
-        // 拖曳結束更新座標
         marker.addListener("dragend", () => {
-            updateLocationValue(marker.getPosition());
+            if (!isEditMode) return;
+            updateCoords(marker.getPosition());
         });
     }
 
-    function updateLocationValue(latLng) {
+    function updateCoords(latLng) {
         document.getElementById("locationData").value = latLng.lat().toFixed(6) + ", " + latLng.lng().toFixed(6);
     }
 
-    // 2. 表單送出邏輯
+    // 切換編輯模式邏輯
+    document.getElementById("editToggle").addEventListener("click", function() {
+        isEditMode = !isEditMode;
+        this.classList.toggle("active");
+        this.textContent = isEditMode ? "編輯模式：開啟" : "編輯模式：已鎖定";
+        marker.setDraggable(isEditMode);
+    });
+
     document.getElementById("requestForm").addEventListener("submit", function(e) {
         e.preventDefault();
-        
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.disabled = true;
-        submitBtn.textContent = "傳送中...";
+        const btn = document.getElementById("submitBtn");
+        btn.disabled = true; btn.textContent = "傳送中...";
 
         const payload = {
-            user: "Weizch先生 (測試)", // 建議之後串接 LIFF 取得暱稱
+            user: "Weizch先生 (測試)", 
             serviceType: document.getElementById("serviceType").value,
             area: document.getElementById("area").value,
             targetObject: document.getElementById("targetObject").value,
             location: document.getElementById("locationData").value
         };
 
-        // 使用 fetch 送出資料到 GAS
-        fetch(GAS_URL, {
-            method: "POST",
-            mode: "no-cors", // 配合 GAS 的跨域限制
-            body: JSON.stringify(payload)
-        })
+        fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
         .then(() => {
-            alert("需求評估單已送出成功！");
-            document.getElementById("requestForm").reset();
-            submitBtn.disabled = false;
-            submitBtn.textContent = "送出需求";
+            alert("送出成功！");
+            btn.disabled = false; btn.textContent = "送出需求";
         })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("傳送發生錯誤，請稍後再試。");
-            submitBtn.disabled = false;
+        .catch(() => {
+            alert("傳送出錯，請檢查網路。");
+            btn.disabled = false;
         });
     });
 </script>
-
 </body>
 </html>
