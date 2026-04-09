@@ -8,25 +8,26 @@
         :root { --primary-color: #00c853; --dark-green: #2e7d32; --bg-color: #f0f2f5; }
         body { font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; }
         
-        /* 頂部 Header：Logo 與公司名稱並排 */
-        .header { background: white; padding: 15px 35px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
-        .logo { height: 60px; margin-right: 20px; transition: 0.3s; }
+        /* 頂部 Header 樣式優化 */
+        .header { background: #ffffff; padding: 15px 35px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        
+        /* Logo 修正：增加 object-fit 確保渲染清晰，並加入手機版縮放 */
+        .logo { height: 60px; margin-right: 20px; transition: 0.3s; display: block; object-fit: contain; }
         .company-name { font-size: 24px; font-weight: bold; color: #333; letter-spacing: 0.5px; }
 
         /* 表單容器 */
         .container { max-width: 680px; margin: 40px auto; background: white; padding: 45px; border-radius: 16px; box-shadow: 0 5px 25px rgba(0,0,0,0.07); }
         
-        /* 表單內部標題：放大字體增加層次感 */
+        /* 標題層次感強化 */
         .form-title-area { margin-bottom: 35px; border-left: 6px solid var(--primary-color); padding-left: 22px; }
-        .form-title { font-size: 28px; font-weight: 800; color: #222; margin: 0; letter-spacing: 2px; }
-        .form-subtitle { font-size: 15px; color: #777; margin-top: 8px; font-weight: 400; }
+        .form-title { font-size: 28px; font-weight: 800; color: #1a1a1a; margin: 0; letter-spacing: 2px; }
+        .form-subtitle { font-size: 15px; color: #777; margin-top: 10px; font-weight: 400; }
 
         .form-group { margin-bottom: 25px; }
         label { display: block; font-weight: bold; margin-bottom: 12px; color: #444; font-size: 16px; }
         select, input[type="text"], input[type="number"] { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: all 0.3s; background-color: white; }
         select:focus, input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 4px rgba(0, 200, 83, 0.1); }
         
-        /* 地圖區域 */
         #map-container { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #ddd; margin-top: 10px; }
         #map { height: 380px; width: 100%; background-color: #e5e3df; }
         .map-tools { position: absolute; top: 12px; right: 12px; z-index: 5; }
@@ -39,12 +40,21 @@
         .btn-submit { background-color: var(--primary-color); color: white; border: none; padding: 20px; width: 100%; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 25px; box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2); letter-spacing: 1px; }
         .btn-submit:hover { background-color: #00a844; transform: translateY(-1px); }
         .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        /* 手機版排版自動縮放 */
+        @media (max-width: 600px) {
+            .header { padding: 10px 15px; }
+            .logo { height: 50px; margin-right: 10px; }
+            .company-name { font-size: 18px; }
+            .container { padding: 25px; margin: 20px 10px; }
+            .form-title { font-size: 22px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <img src="./logo.png" alt="FDG Logo" class="logo" onerror="this.style.display='none'"> 
+    <img src="./logo.png?v=20260410" alt="FDG Logo" class="logo" id="logoImage" onerror="this.style.display='none'"> 
     <div class="company-name">Frozen Dimensions Geomatics Center</div>
 </div>
 
@@ -72,7 +82,7 @@
 
         <div class="form-group">
             <label for="targetObject">標的物說明</label>
-            <input type="text" id="targetObject" placeholder="例如：農地、廠房、歷史建物" required>
+            <input type="text" id="targetObject" placeholder="例如：農地、廠房、歷史建物基地" required>
         </div>
 
         <div class="form-group">
