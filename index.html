@@ -10,8 +10,6 @@
         
         /* 頂部 Header 樣式優化 */
         .header { background: #ffffff; padding: 15px 35px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
-        
-        /* Logo 修正：增加 object-fit 確保渲染清晰，並加入手機版縮放 */
         .logo { height: 60px; margin-right: 20px; transition: 0.3s; display: block; object-fit: contain; }
         .company-name { font-size: 24px; font-weight: bold; color: #333; letter-spacing: 0.5px; }
 
@@ -24,7 +22,6 @@
         .form-subtitle { font-size: 15px; color: #777; margin-top: 10px; font-weight: 400; }
 
         .form-group { margin-bottom: 25px; }
-        /* 併排欄位的容器 */
         .form-row { display: flex; gap: 20px; margin-bottom: 25px; }
         .form-row .form-group { flex: 1; margin-bottom: 0; }
 
@@ -45,17 +42,17 @@
         .btn-submit:hover { background-color: #00a844; transform: translateY(-1px); }
         .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        /* 手機版排版自動縮放 */
         @media (max-width: 600px) {
             .header { padding: 10px 15px; }
             .logo { height: 50px; margin-right: 10px; }
             .company-name { font-size: 18px; }
             .container { padding: 25px; margin: 20px 10px; }
             .form-title { font-size: 22px; }
-            /* 手機版將併排欄位恢復為垂直堆疊 */
             .form-row { flex-direction: column; gap: 25px; }
         }
     </style>
+    
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
 
@@ -136,7 +133,35 @@
 <script>
     let map, marker, isEditMode = true;
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzZDeNdatsrmwezdAGAE1WL8K5J02aEQ0COX2FoiUggU6QucZYrU6ww10V-DcRF1zoK/exec";
+    
+    // 全域變數：預設為網頁訪客，稍後會被 LIFF 抓到的 LINE 暱稱覆蓋
+    let currentUserProfileName = "網頁訪客";
 
+    // LIFF 初始化與抓取使用者資料
+    function initializeLiff() {
+        // 重要：請務必將此處的 YOUR_LIFF_ID 替換為您的真實 ID
+        liff.init({ liffId: "2009670938-wdxrng0c" }) 
+            .then(() => {
+                if (liff.isLoggedIn()) {
+                    liff.getProfile().then(profile => {
+                        currentUserProfileName = profile.displayName;
+                        console.log("已取得 LINE 用戶名稱：", currentUserProfileName);
+                    }).catch(err => console.error("無法取得 Profile：", err));
+                } else {
+                    // 若未登入，可選擇是否強制跳轉登入畫面
+                    // liff.login(); 
+                    console.log("用戶未登入 LINE");
+                }
+            })
+            .catch(err => {
+                console.error("LIFF 初始化失敗：", err);
+            });
+    }
+
+    // 網頁載入完成後執行 LIFF 初始化
+    document.addEventListener("DOMContentLoaded", initializeLiff);
+
+    // 地圖初始化
     function initMap() {
         const kinmen = { lat: 24.449, lng: 118.322 };
         map = new google.maps.Map(document.getElementById("map"), {
@@ -182,9 +207,9 @@
         btn.disabled = true;
         btn.textContent = "傳送中...";
 
-        // 資料打包，新增了 companyName 與 contactPerson
+        // 資料打包：將原本寫死的名稱替換為動態抓取的 currentUserProfileName
         const payload = {
-            user: "Weizch先生", 
+            user: currentUserProfileName, 
             companyName: document.getElementById("companyName").value,
             contactPerson: document.getElementById("contactPerson").value,
             phone: document.getElementById("phone").value,
@@ -201,6 +226,11 @@
             btn.disabled = false;
             btn.textContent = "送出需求評估";
             document.getElementById("requestForm").reset();
+            
+            // 如果是在 LINE 內建瀏覽器開啟，送出後自動關閉視窗，體驗更佳
+            if (liff.isInClient()) {
+                liff.closeWindow();
+            }
         })
         .catch(() => {
             alert("傳送出錯，請檢查網路。");
