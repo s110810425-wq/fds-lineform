@@ -11,7 +11,7 @@
         /* 頂部 Header 樣式優化 */
         .header { background: #ffffff; padding: 15px 35px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
         
-        /* Logo 修正 */
+        /* Logo 修正：增加 object-fit 確保渲染清晰，並加入手機版縮放 */
         .logo { height: 60px; margin-right: 20px; transition: 0.3s; display: block; object-fit: contain; }
         .company-name { font-size: 24px; font-weight: bold; color: #333; letter-spacing: 0.5px; }
 
@@ -73,6 +73,17 @@
     <form id="requestForm">
         <div class="form-row">
             <div class="form-group">
+                <label for="companyName">公司名稱</label>
+                <input type="text" id="companyName" value="無" required>
+            </div>
+            <div class="form-group">
+                <label for="contactPerson">聯繫人</label>
+                <input type="text" id="contactPerson" placeholder="請輸入姓名" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
                 <label for="phone">聯絡電話</label>
                 <input type="tel" id="phone" placeholder="例如: 0912-345-678" required>
             </div>
@@ -84,7 +95,7 @@
 
         <div class="form-group">
             <label for="serviceType">服務類別</label>
-            <select id="serviceType">
+            <select id="serviceType" required>
                 <option value="無人機航測">無人機航測</option>
                 <option value="點雲資料處理">點雲資料處理</option>
                 <option value="3DGS建模">3DGS建模</option>
@@ -171,9 +182,11 @@
         btn.disabled = true;
         btn.textContent = "傳送中...";
 
-        // 資料打包，新增了 phone 與 email
+        // 資料打包，新增了 companyName 與 contactPerson
         const payload = {
             user: "Weizch先生", 
+            companyName: document.getElementById("companyName").value,
+            contactPerson: document.getElementById("contactPerson").value,
             phone: document.getElementById("phone").value,
             email: document.getElementById("email").value,
             serviceType: document.getElementById("serviceType").value,
