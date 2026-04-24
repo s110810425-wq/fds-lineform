@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frozen Dimensions Geomatics</title>
+    <title>Frozen Dimensions Geomatics Center - 專案需求評估單</title>
     <style>
         /* === 導入官網科技配色 === */
         :root {
@@ -14,8 +14,8 @@
             --text-muted: #64748B;
             --pure-white: #FFFFFF;
             --pure-black: #0F172A;
-            --focus-glow: rgba(10, 90, 154, 0.15); /* 點擊輸入框的發光色 */
-            --tip-bg: #E0F2FE; /* 淡冰藍色背景 */
+            --focus-glow: rgba(10, 90, 154, 0.15); 
+            --tip-bg: #E0F2FE; 
         }
 
         body { 
@@ -94,7 +94,7 @@
 
 <div class="header">
     <img src="./logo.png?v=20260410_v2" alt="FDG Logo" class="logo" id="logoImage" onerror="this.style.display='none'"> 
-    <div class="company-name">Frozen Dimensions Geomatics</div>
+    <div class="company-name">Frozen Dimensions Geomatics Center</div>
 </div>
 
 <div class="container">
@@ -185,7 +185,6 @@
                 if (liff.isLoggedIn()) {
                     liff.getProfile().then(profile => {
                         currentUserProfileName = profile.displayName;
-                        // 成功取得資料後，更新畫面上的文字
                         greetingElement.textContent = "Hi, " + currentUserProfileName;
                     }).catch(err => {
                         greetingElement.textContent = "Hi, 網頁訪客";
@@ -202,7 +201,6 @@
             });
     }
 
-    // 網頁載入完成後執行 LIFF 初始化
     document.addEventListener("DOMContentLoaded", initializeLiff);
 
     // 地圖初始化
@@ -251,7 +249,6 @@
         btn.disabled = true;
         btn.textContent = "傳送中...";
 
-        // 資料打包
         const payload = {
             user: currentUserProfileName, 
             companyName: document.getElementById("companyName").value,
@@ -271,7 +268,6 @@
             btn.textContent = "送出需求評估";
             document.getElementById("requestForm").reset();
             
-            // 如果是在 LINE 內建瀏覽器開啟，送出後自動關閉視窗
             if (liff.isInClient()) {
                 liff.closeWindow();
             }
@@ -281,6 +277,21 @@
             btn.disabled = false;
             btn.textContent = "送出需求評估";
         });
+    });
+
+    // ==========================================================
+    // 【全新加入】禁用滑鼠右鍵選單與拖曳 (防另存圖片)
+    // ==========================================================
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+        }
+    });
+
+    document.addEventListener('dragstart', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+        }
     });
 </script>
 </body>
